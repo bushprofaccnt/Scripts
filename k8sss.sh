@@ -11,6 +11,26 @@ systemctl enable docker
 curl -fsSL "https://packages.cloud.google.com/apt/doc/apt-key.gpg" | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg
 echo 'deb https://packages.cloud.google.com/apt kubernetes-xenial main' > /etc/apt/sources.list.d/kubernetes.list
 
+# if you got error after above commands like : 
+------------------------------------------------------------------------------------------------
+#Ign:4 https://packages.cloud.google.com/apt kubernetes-xenial InRelease
+#Err:5 https://packages.cloud.google.com/apt kubernetes-xenial Release
+  404  Not Found [IP: 142.251.167.102 443]
+#Get:6 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]
+Reading package lists... Done
+#E: The repository 'https://packages.cloud.google.com/apt kubernetes-xenial Release' no longer has a Release file.
+#N: Updating from such a repository can't be done securely, and is therefore disabled by default.
+#N: See apt-secure(8) manpage for repository creation and user configuration details.
+---------------------------------------------------------------------------------------------
+# then do this :
+----------------------------------------------------------------------------------------------
+# step :
+apt-get install -y apt-transport-https ca-certificates curl && \
+    curl -fsSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list && \
+    apt-get update
+  
+
 apt update -y
 apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
 
